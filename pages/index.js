@@ -1,82 +1,148 @@
-import Head from 'next/head'
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import Navbar from "../components/navbar";
+import Link from "next/link";
 
 export default function Home() {
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+  });
+  const animation = useAnimation();
+
+  const [midsTransBg, setMidsTransBg] = useState(0);
+
+  const toggleTransBg = () => {
+    setMidsTransBg((prevValue) => (prevValue + 1) % 3);
+  };
+
+  useEffect(() => {
+    const intervalid = setInterval(toggleTransBg, 2000);
+
+    return () => clearInterval(intervalid);
+  }, []);
+
+  useEffect(() => {
+    if (inView) {
+      animation.start({
+        opacity: 1,
+        transition: { duration: 0.5 },
+      });
+    } else {
+      animation.start({
+        opacity: 0,
+        transition: { duration: 0.5 },
+      });
+    }
+  }, [inView]);
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div className="h-full w-full pb-10">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Codet</title>
       </Head>
 
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
+      <Navbar />
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* Mid section */}
+      <div className="flex flex-col items-center justify-center pt-10 sm:pt-20 select-none">
+        <motion.span
+          // variants={midSectionSpanVariant}
+          initial={{ x: -2000 }}
+          animate={{ x: 0 }}
+          transition={{
+            delay: 1,
+            duration: 0.8,
+            type: "spring",
+          }}
+          className={`${
+            midsTransBg === 0 ? "text-transparent" : ""
+          } text-7xl sm:text-9xl font-bold bg-clip-text block bg-gradient-to-r from-blue-500 to-cyan-400 transition-colors duration-500 ease-in-out`}
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+          Code.
+        </motion.span>
+        <motion.span
+          initial={{ x: -2000 }}
+          animate={{ x: 0 }}
+          transition={{ delay: 2, duration: 0.8, type: "spring" }}
+          className={`${
+            midsTransBg === 1 ? "text-transparent" : ""
+          } text-7xl sm:text-9xl font-bold bg-clip-text block bg-gradient-to-r from-violet-600 to-fuchsia-500 transition-colors duration-500 ease-in-out`}
+        >
+          Preview.
+        </motion.span>
+        <motion.span
+          initial={{ x: -2000 }}
+          animate={{ x: 0 }}
+          transition={{ delay: 3, duration: 0.8, type: "spring" }}
+          className={`${
+            midsTransBg === 2 ? "text-transparent" : ""
+          } text-7xl sm:text-9xl font-bold bg-clip-text block bg-gradient-to-r from-orange-600 to-amber-400 transition-colors duration-500 ease-in-out`}
+        >
+          Share.
+        </motion.span>
+      </div>
+
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1 }}
+        className="mt-12 lg:mt-32 font-semibold text-lg md:text-2xl text-center p-4"
+      >
+        <p>
+          Codet is a platform for you to try out your HTML, CSS and JavaScript
+          code in an editor.<br></br>
+          You can code your webpages, preview them and share with the community.
+        </p>
+      </motion.div>
+
+      <motion.div
+        ref={ref}
+        animate={animation}
+        className="bg-palewhite mt-12 p-2 lg:p-4 lg:mt-28"
+      >
+        <p className="font-bold text-2xl lg:text-6xl mb-8 text-center">
+          Code Editor
+        </p>
+        <img src="editor.png"></img>
+      </motion.div>
+
+      <div className="p-2 mt-8 font-semibold text-center text-xl">
+        <Link href="/editor">
+          <a className="text-white bg-black hover:bg-theme-red hover:text-white p-2 rounded-md transition-all duration-500 ease-out">
+            Try out the code editor for yourself!
+          </a>
+        </Link>
+      </div>
+
+      <div className="mt-20 flex justify-center items-center  ">
+        Made with{" "}
+        <span className="text-theme-red mx-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </span>
+        by
+        <a
+          href="http://nikhilpawar.in"
+          target="_blank"
+          className="hover:text-theme-red mx-1"
+        >
+          Nikhil Pawar
         </a>
-      </footer>
+      </div>
     </div>
-  )
+  );
 }
